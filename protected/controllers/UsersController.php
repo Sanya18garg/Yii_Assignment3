@@ -5,10 +5,7 @@ class UsersController extends Controller
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-private $_identity;
 	 */
-private $_identity;
-
 	public $layout='//layouts/column2';
 
 	/**
@@ -51,54 +48,57 @@ private $_identity;
 		));
 	}
 
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
-	public function actionCreate()
-	{
-		$model=new Users;
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+//  * Creates a new model.
+//  * If creation is successful, the browser will be redirected to the 'view' page.
+//  */
+public function actionCreate()
+{
+    $model=new Users;
 
-		if(isset($_POST['Users']))
-		{
-			$model->attributes=$_POST['Users'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->users_id));
-		}
+    // Uncomment the following line if AJAX validation is needed
+    // $this->performAjaxValidation($model);
 
-		$this->render('create',array(
-			'model'=>$model,
-		));
-	}
+    if(isset($_POST['Users']))
+    {
+
+		$model->attributes=$_POST['Users'];
+		print_r($_POST['Users']['users_password']);
+         // $model->password = $model->hashPassword($_POST['Users']['users_password']);
+          if($model->save())
+              $this->redirect(array('view','id'=>$model->users_id));
+          else
+             $model->password = $_POST['User']['password'];
+    }
+
+    $this->render('create',array(
+        'model'=>$model,
+    ));
+}
 
 
 
 	public function actionLogin()
 	{
 		$model=new Users;
-		
+
 		// if it is ajax validation request
-		//if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		//{
-		//	echo CActiveForm::validate($model);
-		//	Yii::app()->end();
-		//}
+		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
+		{
+			echo CActiveForm::validate($model);
+			Yii::app()->end();
+		}
 
 		// collect user input data
 		if(isset($_POST['Users']))
 		{
 			$model->attributes=$_POST['Users'];
-			//echo"hello";
+			echo"hello";
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
 				$this->redirect('view');
-		//$this->redirect(Yii::app()->users->returnUrl);
 		}
 		// display the login form
-		//echo "hello";
 		$this->render('login',array('model'=>$model));
 
 	}
@@ -153,13 +153,13 @@ private $_identity;
 		// ));
 		$this->render('index',array(
 			'model'=>$model,
-			
+
 		));
 	}
 
 
 
-	
+
 	/**
 	 * Manages all models.
 	 */
